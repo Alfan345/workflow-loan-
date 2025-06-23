@@ -27,7 +27,7 @@ jobs:
     - name: Train model with MLflow
       run: |
         cd MLProject
-        mlflow run . -e main --experiment-name loan_approval_ci --param-list data_path=loan_data_preprocessing/preprocessed_loan_data.csv,output_dir=models
+        mlflow run . -e main --experiment-name loan_approval_ci --param-list data_path=preprocessed_loan_data.csv,output_dir=models
     
     - name: Archive model artifacts
       uses: actions/upload-artifact@v4
