@@ -8,19 +8,6 @@ import mlflow
 import mlflow.sklearn
 
 def export_best_model(model, run_id, model_name, metrics_dict, export_dir="../models"):
-    """
-    Export the best trained model to a specified directory
-    
-    Args:
-        model: Trained model object
-        run_id: MLflow run ID
-        model_name: Name of the model (e.g., "RandomForest")
-        metrics_dict: Dictionary containing model metrics
-        export_dir: Directory to export the model
-        
-    Returns:
-        str: Path to the exported model directory
-    """
     
     # Create export directory if it doesn't exist
     if not os.path.exists(export_dir):
