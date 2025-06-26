@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-#ini komen
+
 def load_and_prepare_data(data_path='../preprocessed_loan_data.csv'):
     """
     Load and prepare data for model training
