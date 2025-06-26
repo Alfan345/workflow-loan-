@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  model-serving:
+    build:
+      context: ./monitoring
+      dockerfile: dockerfile
+    container_name: model-serving
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./models:/app/models:ro
+    environment:
+      - MODEL_PATH=/app/models
+      - PORT=5001
+      - DEBUG=false
+    command: ["python", "inference.py"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+
+  prometheus-exporter:
+    build:
+      context: ./monitoring
+      dockerfile: dockerfile  # Gunakan dockerfile yang sama
+    container_name: prometheus-exporter
+    ports:
+      - "8000:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=file:../modelling/mlruns
+      - MODEL_SERVING_URL=http://model-serving:5001
+      - PROMETHEUS_EXPORTER_PORT=8000
+      - METRICS_COLLECTION_INTERVAL=30
+    volumes:
+      - ./modelling:/app/modelling:ro
+    command: ["python", "prometheus_exporter.py"]  # Run prometheus exporter instead
+    depends_on:
+      - model-serving
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - model-serving
+      - prometheus-exporter
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+
+volumes:
+  grafana-storage:
+
+networks:
+  monitoring-network:
+    driver: bridge

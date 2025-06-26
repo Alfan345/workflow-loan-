@@ -1,0 +1,14 @@
+artifact_uri: file:///workspaces/workflow-loan-/modelling/mlruns/673101708916863862/41e84d5a8ba04956918abd1bbc0f40fa/artifacts
+end_time: 1750944643165
+entry_point_name: ''
+experiment_id: '673101708916863862'
+lifecycle_stage: active
+run_id: 41e84d5a8ba04956918abd1bbc0f40fa
+run_name: RandomForest_hyperparameter_tuning
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750944405973
+status: 3
+tags: []
+user_id: codespace

@@ -1,0 +1,10 @@
+artifact_location: file:///workspaces/workflow-loan-/modelling/mlruns/673101708916863862/models/m-b37782fda5634bd995fc827ef1b26ea2/artifacts
+creation_timestamp: 1750944627507
+experiment_id: '673101708916863862'
+last_updated_timestamp: 1750944631448
+model_id: m-b37782fda5634bd995fc827ef1b26ea2
+model_type: null
+name: model
+source_run_id: 41e84d5a8ba04956918abd1bbc0f40fa
+status: 2
+status_message: null

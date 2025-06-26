@@ -1,0 +1,14 @@
+artifact_uri: file:///workspaces/workflow-loan-/modelling/mlruns/673101708916863862/7205b1627c1740168b0434d0f8d27c5b/artifacts
+end_time: 1750944637701
+entry_point_name: ''
+experiment_id: '673101708916863862'
+lifecycle_stage: active
+run_id: 7205b1627c1740168b0434d0f8d27c5b
+run_name: traveling-crow-136
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750944405973
+status: 3
+tags: []
+user_id: codespace

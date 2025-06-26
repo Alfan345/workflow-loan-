@@ -1,0 +1,68 @@
+Model Export Information
+========================
+
+Model Name: RandomForest
+Model Type: RandomForestClassifier
+MLflow Run ID: 41e84d5a8ba04956918abd1bbc0f40fa
+Export Date: 2025-06-26 13:30:43
+
+Model Performance Metrics:
+-------------------------
+training_f1_score: 0.9930
+training_log_loss: 0.0643
+test_precision: 0.8964
+training_roc_auc: 1.0000
+test_accuracy: 0.9297
+training_accuracy_score: 0.9930
+training_score: 0.9930
+training_recall_score: 0.9930
+test_recall: 0.7746
+best_cv_score: 0.9272
+test_roc_auc: 0.9747
+training_precision_score: 0.9931
+test_f1_score: 0.8311
+
+Model Parameters:
+----------------
+bootstrap: True
+ccp_alpha: 0.0
+class_weight: None
+criterion: gini
+max_depth: 20
+max_features: sqrt
+max_leaf_nodes: None
+max_samples: None
+min_impurity_decrease: 0.0
+min_samples_leaf: 1
+min_samples_split: 2
+min_weight_fraction_leaf: 0.0
+monotonic_cst: None
+n_estimators: 200
+n_jobs: None
+oob_score: False
+random_state: 42
+verbose: 0
+warm_start: False
+
+Files in this export:
+--------------------
+- RandomForest_model.pkl: Pickled model (use with pickle.load())
+- RandomForest_model.joblib: Joblib model (use with joblib.load())
+- model_metadata.json: Machine-readable metadata
+- model_info.txt: Human-readable information
+
+Usage Example:
+-------------
+import pickle
+import joblib
+
+# Load using pickle
+with open('RandomForest_model.pkl', 'rb') as f:
+    model = pickle.load(f)
+
+# Load using joblib (recommended)
+model = joblib.load('RandomForest_model.joblib')
+
+# Make predictions
+predictions = model.predict(X_test)
+probabilities = model.predict_proba(X_test)

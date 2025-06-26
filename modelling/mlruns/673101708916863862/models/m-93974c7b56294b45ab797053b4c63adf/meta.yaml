@@ -1,0 +1,10 @@
+artifact_location: file:///workspaces/workflow-loan-/modelling/mlruns/673101708916863862/models/m-93974c7b56294b45ab797053b4c63adf/artifacts
+creation_timestamp: 1750944635243
+experiment_id: '673101708916863862'
+last_updated_timestamp: 1750944637685
+model_id: m-93974c7b56294b45ab797053b4c63adf
+model_type: null
+name: best_estimator
+source_run_id: 41e84d5a8ba04956918abd1bbc0f40fa
+status: 2
+status_message: null

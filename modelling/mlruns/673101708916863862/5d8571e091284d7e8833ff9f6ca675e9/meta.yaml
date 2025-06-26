@@ -1,0 +1,14 @@
+artifact_uri: file:///workspaces/workflow-loan-/modelling/mlruns/673101708916863862/5d8571e091284d7e8833ff9f6ca675e9/artifacts
+end_time: 1750944637701
+entry_point_name: ''
+experiment_id: '673101708916863862'
+lifecycle_stage: active
+run_id: 5d8571e091284d7e8833ff9f6ca675e9
+run_name: honorable-lamb-907
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750944405973
+status: 3
+tags: []
+user_id: codespace

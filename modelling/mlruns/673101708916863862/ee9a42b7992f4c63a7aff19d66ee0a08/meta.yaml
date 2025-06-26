@@ -1,0 +1,14 @@
+artifact_uri: file:///workspaces/workflow-loan-/modelling/mlruns/673101708916863862/ee9a42b7992f4c63a7aff19d66ee0a08/artifacts
+end_time: 1750944637701
+entry_point_name: ''
+experiment_id: '673101708916863862'
+lifecycle_stage: active
+run_id: ee9a42b7992f4c63a7aff19d66ee0a08
+run_name: useful-shrew-288
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750944405973
+status: 3
+tags: []
+user_id: codespace

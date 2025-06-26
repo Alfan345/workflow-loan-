@@ -1,0 +1,50 @@
+{
+    "model_name": "RandomForest",
+    "run_id": "41e84d5a8ba04956918abd1bbc0f40fa",
+    "export_timestamp": "20250626_133043",
+    "export_date": "2025-06-26T13:30:43.403142",
+    "model_parameters": {
+        "bootstrap": true,
+        "ccp_alpha": 0.0,
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": 20,
+        "max_features": "sqrt",
+        "max_leaf_nodes": null,
+        "max_samples": null,
+        "min_impurity_decrease": 0.0,
+        "min_samples_leaf": 1,
+        "min_samples_split": 2,
+        "min_weight_fraction_leaf": 0.0,
+        "monotonic_cst": null,
+        "n_estimators": 200,
+        "n_jobs": null,
+        "oob_score": false,
+        "random_state": 42,
+        "verbose": 0,
+        "warm_start": false
+    },
+    "metrics": {
+        "training_f1_score": 0.9929595955381376,
+        "training_log_loss": 0.06427284638322188,
+        "test_precision": 0.8963730569948186,
+        "training_roc_auc": 0.9999920509347859,
+        "test_accuracy": 0.9296666666666666,
+        "training_accuracy_score": 0.993,
+        "training_score": 0.993,
+        "training_recall_score": 0.993,
+        "test_recall": 0.7746268656716417,
+        "best_cv_score": 0.9272222222222222,
+        "test_roc_auc": 0.974711599370814,
+        "training_precision_score": 0.9930624159648999,
+        "test_f1_score": 0.8310648518815053
+    },
+    "model_type": "RandomForestClassifier",
+    "sklearn_version": null,
+    "files": {
+        "pickle_model": "RandomForest_model.pkl",
+        "joblib_model": "RandomForest_model.joblib",
+        "metadata": "model_metadata.json",
+        "model_info": "model_info.txt"
+    }
+}

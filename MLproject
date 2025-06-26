@@ -5,34 +5,34 @@ conda_env: conda.yml
 entry_points:
   main:
     parameters:
-      data_path: {type: string, default: "../preprocessed_loan_data.csv"}
+      data_path: {type: string, default: "preprocessed_loan_data.csv"}
       n_estimators: {type: string, default: "100,200"}
       max_depth: {type: string, default: "10,20"}
       min_samples_split: {type: string, default: "2,5"}
       min_samples_leaf: {type: string, default: "1,2"}
       max_features: {type: string, default: "sqrt"}
-      export_dir: {type: string, default: "../models"}
-    command: "python modelling.py --data_path {data_path} --n_estimators {n_estimators} --max_depth {max_depth} --min_samples_split {min_samples_split} --min_samples_leaf {min_samples_leaf} --max_features {max_features} --export_dir {export_dir}"
+      export_dir: {type: string, default: "models"}
+    command: "cd modelling && python modelling.py --data_path ../{data_path} --n_estimators {n_estimators} --max_depth {max_depth} --min_samples_split {min_samples_split} --min_samples_leaf {min_samples_leaf} --max_features {max_features} --export_dir ../{export_dir}"
 
   data_preparation:
     parameters:
-      data_path: {type: string, default: "../preprocessed_loan_data.csv"}
-    command: "python -c 'from data_preparation import load_and_prepare_data; load_and_prepare_data(\"{data_path}\")'"
+      data_path: {type: string, default: "preprocessed_loan_data.csv"}
+    command: "cd modelling && python -c 'from data_preparation import load_and_prepare_data; load_and_prepare_data(\"../{data_path}\")'"
 
   hyperparameter_tuning:
     parameters:
-      data_path: {type: string, default: "../preprocessed_loan_data.csv"}
+      data_path: {type: string, default: "preprocessed_loan_data.csv"}
       model_type: {type: string, default: "RandomForest"}
       n_estimators: {type: string, default: "100,200"}
       max_depth: {type: string, default: "10,20"}
       min_samples_split: {type: string, default: "2,5"}
       min_samples_leaf: {type: string, default: "1,2"}
       max_features: {type: string, default: "sqrt"}
-    command: "python -c 'from data_preparation import load_and_prepare_data; from hyperparameter_tuning import hyperparameter_tuning; import ast; X_train, X_test, y_train, y_test, X_train_scaled, X_test_scaled = load_and_prepare_data(\"{data_path}\"); param_grid = {{\"n_estimators\": [int(x) for x in \"{n_estimators}\".split(\",\")], \"max_depth\": [int(x) for x in \"{max_depth}\".split(\",\")], \"min_samples_split\": [int(x) for x in \"{min_samples_split}\".split(\",\")], \"min_samples_leaf\": [int(x) for x in \"{min_samples_leaf}\".split(\",\")], \"max_features\": [\"{max_features}\"]}}; hyperparameter_tuning(\"{model_type}\", param_grid, X_train_scaled, X_test_scaled, y_train, y_test)'"
+    command: "cd modelling && python -c 'from data_preparation import load_and_prepare_data; from hyperparameter_tuning import hyperparameter_tuning; X_train, X_test, y_train, y_test, X_train_scaled, X_test_scaled = load_and_prepare_data(\"../{data_path}\"); param_grid = {{\"n_estimators\": [int(x) for x in \"{n_estimators}\".split(\",\")], \"max_depth\": [int(x) for x in \"{max_depth}\".split(\",\")], \"min_samples_split\": [int(x) for x in \"{min_samples_split}\".split(\",\")], \"min_samples_leaf\": [int(x) for x in \"{min_samples_leaf}\".split(\",\")], \"max_features\": [\"{max_features}\"]}}; hyperparameter_tuning(\"{model_type}\", param_grid, X_train_scaled, X_test_scaled, y_train, y_test)'"
 
   model_export:
     parameters:
       run_id: {type: string}
       model_name: {type: string, default: "RandomForest"}
-      export_dir: {type: string, default: "../models"}
-    command: "python -c 'from model_export import export_best_model; from hyperparameter_tuning import get_run_metrics; import mlflow; import joblib; import os; client = mlflow.tracking.MlflowClient(); run = client.get_run(\"{run_id}\"); model_uri = f\"runs:/{run_id}/best_model\"; model = mlflow.sklearn.load_model(model_uri); metrics = get_run_metrics(\"{run_id}\"); export_best_model(model, \"{run_id}\", \"{model_name}\", metrics, \"{export_dir}\")'"
+      export_dir: {type: string, default: "models"}
+    command: "cd modelling && python -c 'from model_export import export_best_model; from hyperparameter_tuning import get_run_metrics; import mlflow; client = mlflow.tracking.MlflowClient(); run = client.get_run(\"{run_id}\"); model_uri = f\"runs:/{run_id}/best_model\"; model = mlflow.sklearn.load_model(model_uri); metrics = get_run_metrics(\"{run_id}\"); export_best_model(model, \"{run_id}\", \"{model_name}\", metrics, \"../{export_dir}\")'"
