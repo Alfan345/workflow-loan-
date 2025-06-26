@@ -1,23 +1,17 @@
-name: Simple MLflow Test
+name: MLflow Model Training
 
 on:
   push:
     branches: [ main, develop ]
+    paths: 
+      - 'modelling/**'
+      - 'preprocessed_loan_data.csv'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-    inputs:
-      test_mode:
-        description: 'Test mode'
-        required: false
-        default: 'basic'
-        type: choice
-        options:
-        - basic
-        - advanced
 
 jobs:
-  basic-test:
+  model-training:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -28,147 +22,150 @@ jobs:
       with:
         python-version: '3.9'
     
-    - name: Install basic dependencies
+    - name: Check required files
+      run: |
+        echo "=== Checking Required Files ==="
+        files=("modelling/model_functions.py" "modelling/data_preparation.py" "modelling/modelling.py" "modelling/hyperparameter_tuning.py" "modelling/model_export.py" "preprocessed_loan_data.csv")
+        
+        for file in "${files[@]}"; do
+          if [ -f "$file" ]; then
+            echo "✅ $file found"
+          else
+            echo "❌ $file not found"
+            exit 1
+          fi
+        done
+    
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pandas scikit-learn numpy mlflow matplotlib seaborn joblib
     
-    - name: Check files
+    - name: Setup directories
       run: |
-        echo "=== Repository Structure ==="
-        ls -la
-        
-        echo "=== Check if data file exists ==="
-        if [ -f "preprocessed_loan_data.csv" ]; then
-          echo "✅ Data file found"
-          echo "Data shape:"
-          python -c "import pandas as pd; df = pd.read_csv('preprocessed_loan_data.csv'); print(f'Rows: {len(df)}, Columns: {len(df.columns)}')"
-        else
-          echo "❌ Data file not found"
-          echo "Available files:"
-          find . -name "*.csv" | head -10
-        fi
-        
-        echo "=== Check modelling directory ==="
-        if [ -d "modelling" ]; then
-          echo "✅ Modelling directory found"
-          ls -la modelling/
-        else
-          echo "❌ Modelling directory not found"
-        fi
+        cd modelling
+        mkdir -p mlruns
+        mkdir -p ../models
+        echo "✅ Directories created"
     
-    - name: Create minimal training script
+    - name: Run your existing modelling script
       run: |
-        cat > quick_train.py << 'EOF'
-        import pandas as pd
-        import numpy as np
-        from sklearn.model_selection import train_test_split
-        from sklearn.ensemble import RandomForestClassifier
-        from sklearn.preprocessing import StandardScaler
-        from sklearn.metrics import accuracy_score
-        import mlflow
-        import mlflow.sklearn
-        import os
-
-        print("🚀 Starting minimal model training...")
-
-        # Check if data file exists
-        if not os.path.exists('preprocessed_loan_data.csv'):
-            print("❌ Data file not found!")
-            # Create dummy data for testing
-            print("📝 Creating dummy data for testing...")
-            np.random.seed(42)
-            n_samples = 1000
-            n_features = 10
-            
-            # Generate dummy features
-            X_dummy = np.random.randn(n_samples, n_features)
-            y_dummy = np.random.randint(0, 2, n_samples)
-            
-            # Create dummy DataFrame
-            feature_names = [f'feature_{i}' for i in range(n_features)]
-            df_dummy = pd.DataFrame(X_dummy, columns=feature_names)
-            df_dummy['loan_status'] = y_dummy
-            
-            print(f"✅ Created dummy dataset: {df_dummy.shape}")
-            X = df_dummy.drop('loan_status', axis=1)
-            y = df_dummy['loan_status']
-        else:
-            print("✅ Loading real data...")
-            df = pd.read_csv('preprocessed_loan_data.csv')
-            print(f"Data shape: {df.shape}")
-            
-            X = df.drop('loan_status', axis=1)
-            y = df['loan_status']
-
-        # Split data
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42
-        )
-
-        print(f"Training set: {X_train.shape}")
-        print(f"Test set: {X_test.shape}")
-
-        # Scale features
-        scaler = StandardScaler()
-        X_train_scaled = scaler.fit_transform(X_train)
-        X_test_scaled = scaler.transform(X_test)
-
-        # Setup MLflow
-        os.makedirs('mlruns', exist_ok=True)
-        mlflow.set_tracking_uri('file:./mlruns')
-        mlflow.set_experiment('Quick_Test')
-
-        # Train model
-        with mlflow.start_run():
-            model = RandomForestClassifier(
-                n_estimators=50,  # Small for quick test
-                max_depth=5,
-                random_state=42
-            )
-            
-            model.fit(X_train_scaled, y_train)
-            
-            # Test predictions
-            y_pred = model.predict(X_test_scaled)
-            accuracy = accuracy_score(y_test, y_pred)
-            
-            # Log to MLflow
-            mlflow.log_param("n_estimators", 50)
-            mlflow.log_param("max_depth", 5)
-            mlflow.log_metric("accuracy", accuracy)
-            mlflow.sklearn.log_model(model, "model")
-            
-            print(f"🎯 Model accuracy: {accuracy:.4f}")
-            print("✅ Training completed successfully!")
-
-        print("🏁 Workflow test completed!")
-        EOF
+        cd modelling
+        echo "🚀 Running your modelling.py script..."
+        python modelling.py
     
-    - name: Run minimal training
-      run: |
-        python quick_train.py
-    
-    - name: Check results
+    - name: Check training results
       run: |
         echo "=== Training Results ==="
-        if [ -d "mlruns" ]; then
-          echo "✅ MLflow tracking created"
-          find mlruns -type f | head -5
+        
+        # Check MLflow artifacts
+        if [ -d "modelling/mlruns" ]; then
+          echo "✅ MLflow tracking data created"
+          echo "Generated files:"
+          find modelling/mlruns -name "*.png" -o -name "*.csv" -o -name "*.pkl" | head -10
         else
-          echo "❌ No MLflow artifacts"
+          echo "❌ No MLflow artifacts found"
+        fi
+        
+        # Check exported models
+        if [ -d "models" ]; then
+          echo "✅ Models exported to models directory"
+          ls -la models/
+        else
+          echo "❌ No models directory found"
+        fi
+        
+        # Check generated plots and reports
+        cd modelling
+        if ls confusion_matrix_*.png 1> /dev/null 2>&1; then
+          echo "✅ Confusion matrix plots generated"
+          ls -la confusion_matrix_*.png
+        fi
+        
+        if ls classification_report_*.csv 1> /dev/null 2>&1; then
+          echo "✅ Classification reports generated" 
+          ls -la classification_report_*.csv
         fi
     
-    - name: Test completion notification
+    - name: Show experiment summary
       run: |
-        echo "🎉 Simple workflow test completed!"
-        echo "✅ Python setup: OK"
-        echo "✅ Dependencies: OK" 
-        echo "✅ Model training: OK"
-        echo "✅ MLflow tracking: OK"
+        cd modelling
+        echo "📊 Experiment Summary:"
+        python -c "
+        import mlflow
+        from mlflow.tracking import MlflowClient
         
-        if [ "${{ github.event.inputs.test_mode }}" = "advanced" ]; then
-          echo "🔬 Advanced mode enabled"
-        else
-          echo "🔧 Basic mode completed"
-        fi
+        try:
+            mlflow.set_tracking_uri('file:./mlruns')
+            client = MlflowClient()
+            
+            experiments = client.list_experiments()
+            for exp in experiments:
+                if exp.name != 'Default':
+                    runs = client.search_runs(exp.experiment_id)
+                    print(f'📈 Experiment: {exp.name}')
+                    print(f'   Total runs: {len(runs)}')
+                    
+                    if runs:
+                        # Sort by accuracy
+                        sorted_runs = sorted(runs, key=lambda r: r.data.metrics.get('test_accuracy', r.data.metrics.get('accuracy', 0)), reverse=True)
+                        
+                        print('   Top 3 runs:')
+                        for i, run in enumerate(sorted_runs[:3]):
+                            metrics = run.data.metrics
+                            accuracy = metrics.get('test_accuracy', metrics.get('accuracy', 0))
+                            precision = metrics.get('test_precision', metrics.get('precision', 0))
+                            recall = metrics.get('test_recall', metrics.get('recall', 0))
+                            f1 = metrics.get('test_f1_score', metrics.get('f1_score', 0))
+                            
+                            print(f'     {i+1}. Run {run.info.run_id[:8]}:')
+                            print(f'        Accuracy: {accuracy:.4f}')
+                            print(f'        Precision: {precision:.4f}')
+                            print(f'        Recall: {recall:.4f}')
+                            print(f'        F1: {f1:.4f}')
+                    print()
+        except Exception as e:
+            print(f'Error reading experiment data: {e}')
+        "
+    
+    - name: Upload MLflow artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: mlflow-tracking-data
+        path: modelling/mlruns/
+        retention-days: 30
+    
+    - name: Upload generated reports and plots
+      uses: actions/upload-artifact@v3
+      with:
+        name: model-reports
+        path: |
+          modelling/confusion_matrix_*.png
+          modelling/classification_report_*.csv
+        retention-days: 30
+    
+    - name: Upload exported models
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: exported-models
+        path: models/
+        retention-days: 90
+    
+    - name: Workflow completion
+      run: |
+        echo "🎉 Model Training Workflow Completed!"
+        echo "================================================"
+        echo "✅ Used your existing scripts without modification:"
+        echo "   - modelling.py (main training script)"
+        echo "   - model_functions.py (training & logging functions)"
+        echo "   - hyperparameter_tuning.py (parameter optimization)"
+        echo "   - model_export.py (model export functions)"
+        echo "   - data_preparation.py (data loading & preprocessing)"
+        echo ""
+        echo "📁 Artifacts uploaded:"
+        echo "   - MLflow tracking data (experiments, metrics, models)"
+        echo "   - Model reports (confusion matrix, classification reports)"
+        echo "   - Exported models (ready for deployment)"
+        echo ""
+        echo "🔍 Download artifacts from the 'Actions' tab to explore results"
