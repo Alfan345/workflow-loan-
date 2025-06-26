@@ -13,7 +13,7 @@ def load_and_prepare_data(data_path='../preprocessed_loan_data.csv'):
     Returns:
         X_train, X_test, y_train, y_test, X_train_scaled, X_test_scaled
     """
-    # Load the preprocessed data
+    # Load the preprocessed
     df = pd.read_csv(data_path)
     
     # Split features and target
