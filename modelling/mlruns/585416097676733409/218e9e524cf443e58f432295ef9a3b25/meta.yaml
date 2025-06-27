@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/workflow-loan-/modelling/mlruns/585416097676733409/218e9e524cf443e58f432295ef9a3b25/artifacts
+end_time: 1750997342163
+entry_point_name: ''
+experiment_id: '585416097676733409'
+lifecycle_stage: active
+run_id: 218e9e524cf443e58f432295ef9a3b25
+run_name: RandomForest_Basic_Training
+run_uuid: 218e9e524cf443e58f432295ef9a3b25
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750997333111
+status: 3
+tags: []
+user_id: codespace

@@ -1,0 +1,43 @@
+{
+    "model_name": "RandomForest_Lightweight",
+    "run_id": "5b79633a50e04c52ba9f2b8e19d48776",
+    "export_timestamp": "20250627_041127",
+    "export_date": "2025-06-27T04:11:27.120367",
+    "model_parameters": {
+        "bootstrap": true,
+        "ccp_alpha": 0.0,
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": 20,
+        "max_features": "sqrt",
+        "max_leaf_nodes": null,
+        "max_samples": null,
+        "min_impurity_decrease": 0.0,
+        "min_samples_leaf": 1,
+        "min_samples_split": 2,
+        "min_weight_fraction_leaf": 0.0,
+        "monotonic_cst": null,
+        "n_estimators": 100,
+        "n_jobs": -1,
+        "oob_score": false,
+        "random_state": 42,
+        "verbose": 0,
+        "warm_start": false
+    },
+    "metrics": {
+        "test_accuracy": 0.9287777777777778,
+        "test_precision": 0.8940702360391479,
+        "test_recall": 0.772636815920398,
+        "test_f1_score": 0.8289298105150787,
+        "test_roc_auc": 0.9741568623264222,
+        "best_cv_score": 0.9261944444444444
+    },
+    "model_type": "RandomForestClassifier",
+    "sklearn_version": null,
+    "files": {
+        "pickle_model": "RandomForest_Lightweight_model.pkl",
+        "joblib_model": "RandomForest_Lightweight_model.joblib",
+        "metadata": "model_metadata.json",
+        "model_info": "model_info.txt"
+    }
+}
